@@ -6,52 +6,41 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.gitapp.R
 import com.example.gitapp.ui.scenes.model.UserUI
 
-class UsersAdapter(private val listener: OnUserClickListener) : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
-    private var usersList: List<UserUI> = mutableListOf()
-
-    fun setUsersList(users: List<UserUI>) {
-        val diffUtilCallBack = UserDiffUtilCallBack(usersList, users)
-        val result = DiffUtil.calculateDiff(diffUtilCallBack)
-
-        this.usersList = users
-        result.dispatchUpdatesTo(this)
-    }
+open class UsersPagedListAdapter(
+    private val glide: RequestManager,
+    private val listener: OnUserClickListener
+) :
+    PagedListAdapter<UserUI, UsersPagedListAdapter.UserHolder>(UserDiffUtilCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_user, parent, false)
         return UserHolder(view)
     }
 
-    override fun getItemCount(): Int = usersList.count()
-
     override fun onBindViewHolder(holder: UserHolder, position: Int) {
-        holder.bind(usersList[position], listener)
+        holder.bind(glide, getItem(position), listener)
     }
 
-    class UserDiffUtilCallBack(private val oldUsers: List<UserUI>, private val newUsers: List<UserUI>) : DiffUtil.Callback() {
+    override fun onViewRecycled(holder: UserHolder) {
+        super.onViewRecycled(holder)
+        holder.recycle(glide)
+    }
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldUsers[oldItemPosition].id == newUsers[newItemPosition].id
+    class UserDiffUtilCallBack : DiffUtil.ItemCallback<UserUI>() {
+        override fun areItemsTheSame(oldItem: UserUI, newItem: UserUI): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun getOldListSize(): Int {
-            return oldUsers.count()
+        override fun areContentsTheSame(oldItem: UserUI, newItem: UserUI): Boolean {
+            return oldItem == newItem
         }
-
-        override fun getNewListSize(): Int {
-            return newUsers.count()
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldUsers[oldItemPosition] == newUsers[newItemPosition]
-        }
-
     }
 
     class UserHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -61,25 +50,27 @@ class UsersAdapter(private val listener: OnUserClickListener) : RecyclerView.Ada
         private val tvLogin: TextView = itemView.findViewById(R.id.tv_login)
         private val ivAdmin: ImageView = itemView.findViewById(R.id.iv_admin)
         private val tvLink: TextView = itemView.findViewById(R.id.tv_link)
-        fun bind(user: UserUI, listener: OnUserClickListener) {
+        fun bind(glide: RequestManager, user: UserUI?, listener: OnUserClickListener) {
             clUser.setOnClickListener {
-                listener.onClick(user.id)
+                user?.id?.let { it1 -> listener.onClick(it1) }
             }
 
-            tvId.text = user.id.toString()
-            tvLogin.text = user.login
-            tvLink.text = user.gitHubUrl
+            tvId.text = user?.id.toString()
+            tvLogin.text = user?.login
+            tvLink.text = user?.gitHubUrl
 
-            when(user.type) {
+            when (user?.type) {
                 "User" -> ivAdmin.setImageResource(R.drawable.user)
                 else -> ivAdmin.setImageResource(R.drawable.admin)
             }
 
-            Glide.with(itemView.context)
-                .load(user.avatar)
+            glide.load(user?.avatar)
                 .placeholder(R.drawable.github_logo)
-                .fitCenter()
                 .into(ivAvatar)
+        }
+
+        fun recycle(glide: RequestManager) {
+            glide.clear(ivAvatar)
         }
     }
 
