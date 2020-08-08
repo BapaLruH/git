@@ -15,9 +15,10 @@ const val USERS_PER_PAGE = 50
 
 object ApiClient {
     fun getApiClient(): GitHubApiInterface {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+//For debug
+//        val httpLoggingInterceptor = HttpLoggingInterceptor()
+//        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+//        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val requestInterceptor = Interceptor { chain ->
             val request = chain.request().newBuilder()
@@ -27,7 +28,7 @@ object ApiClient {
         }
 
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
+//            .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(requestInterceptor)
             .connectTimeout(60, TimeUnit.SECONDS)
             .build()

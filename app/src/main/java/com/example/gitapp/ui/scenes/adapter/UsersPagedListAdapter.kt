@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.gitapp.R
-import com.example.gitapp.ui.scenes.model.UserUI
+import com.example.gitapp.ui.scenes.model.User
 
 open class UsersPagedListAdapter(
     private val glide: RequestManager,
     private val listener: OnUserClickListener
 ) :
-    PagedListAdapter<UserUI, UsersPagedListAdapter.UserHolder>(UserDiffUtilCallBack()) {
+    PagedListAdapter<User, UsersPagedListAdapter.UserHolder>(UserDiffUtilCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_user, parent, false)
@@ -33,12 +33,12 @@ open class UsersPagedListAdapter(
         holder.recycle(glide)
     }
 
-    class UserDiffUtilCallBack : DiffUtil.ItemCallback<UserUI>() {
-        override fun areItemsTheSame(oldItem: UserUI, newItem: UserUI): Boolean {
+    class UserDiffUtilCallBack : DiffUtil.ItemCallback<User>() {
+        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: UserUI, newItem: UserUI): Boolean {
+        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
             return oldItem == newItem
         }
     }
@@ -48,21 +48,15 @@ open class UsersPagedListAdapter(
         private val ivAvatar: ImageView = itemView.findViewById(R.id.iv_avatar)
         private val tvId: TextView = itemView.findViewById(R.id.tv_id)
         private val tvLogin: TextView = itemView.findViewById(R.id.tv_login)
-        private val ivAdmin: ImageView = itemView.findViewById(R.id.iv_admin)
         private val tvLink: TextView = itemView.findViewById(R.id.tv_link)
-        fun bind(glide: RequestManager, user: UserUI?, listener: OnUserClickListener) {
+        fun bind(glide: RequestManager, user: User?, listener: OnUserClickListener) {
             clUser.setOnClickListener {
-                user?.id?.let { it1 -> listener.onClick(it1) }
+                user?.login?.let { it1 -> listener.onClick(it1) }
             }
 
             tvId.text = user?.id.toString()
             tvLogin.text = user?.login
             tvLink.text = user?.gitHubUrl
-
-            when (user?.type) {
-                "User" -> ivAdmin.setImageResource(R.drawable.user)
-                else -> ivAdmin.setImageResource(R.drawable.admin)
-            }
 
             glide.load(user?.avatar)
                 .placeholder(R.drawable.github_logo)
@@ -75,6 +69,6 @@ open class UsersPagedListAdapter(
     }
 
     interface OnUserClickListener {
-        fun onClick(userId: Int)
+        fun onClick(login: String)
     }
 }

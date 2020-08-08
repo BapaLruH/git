@@ -1,5 +1,23 @@
 <resources>
-    <string name="app_name">GitApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Git app</string>
+    <string name="btn_show_details">Show details</string>
+    <string name="description_profile_avatar">Profile avatar</string>
+
+    <string name="login_text">Login: %s</string>
+
+    <string name="text_public_repos">public repos:</string>
+    <string name="text_public_gists">public gists:</string>
+    <string name="text_followers">followers:</string>
+    <string name="text_following">following:</string>
+    <string name="text_biography">Biography:</string>
+
+    <string name="description_blog">Blog</string>
+    <string name="description_tweeter">Tweeter</string>
+
+    <string name="text_created_date">created:</string>
+    <string name="text_updated_date">updated:</string>
+
+    <string name="twitter_url">https://twitter.com/%s</string>
+    <string name="error">"oops, something went wrong!"</string>
+    <string name="title_user_profile">User profile</string>
 </resources>

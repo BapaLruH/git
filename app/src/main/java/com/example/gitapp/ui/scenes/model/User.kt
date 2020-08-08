@@ -1,9 +1,8 @@
 package com.example.gitapp.ui.scenes.model
 
-data class UserUI(
+data class User(
     val login: String?,
     val id: Int,
     val avatar: String?,
-    val gitHubUrl: String?,
-    val type: String?
+    val gitHubUrl: String?
 )

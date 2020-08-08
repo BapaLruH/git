@@ -46,17 +46,13 @@ class StartPageFragment : Fragment(), UsersPagedListAdapter.OnUserClickListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         startPageViewModel.usersPagedList.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }
 
-    override fun onClick(userId: Int) {
-        val action = StartPageFragmentDirections.navigateToDetailsPage(userId)
+    override fun onClick(login: String) {
+        val action = StartPageFragmentDirections.navigateToDetailsPage(login)
         navController.navigate(action)
     }
 }
